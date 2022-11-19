@@ -30,12 +30,9 @@
 
     export TF_VAR_avail_zone="eu-west-3a"
 
-### To configure AWS credentials with AWS CLI
+### set aws configuration through env variables
 
-    aws configure
+    export AWS_ACCESS_KEY_ID="anaccesskey"
+    export AWS_SECRET_ACCESS_KEY="asecretkey"
+    export AWS_DEFAULT_REGION="us-west-2"
 
-### To configure AWS credentials with env variables
-
-    export AWS_SECRET_ACCESS_KEY=...
-    export AWS_ACCESS_KEY_ID=...
-        

@@ -1,8 +1,7 @@
-cidr_blocks = [{
-  cidr_block = "10.0.0.0/16"
-  name       = "dev-vpc"
-  },
-  {
-    cidr_block = "10.0.0.0/24"
-    name       = "dev-subnet"
-}]
+vpc_cidr_block      = "10.0.0.0/16"
+subnet_1_cidr_block = "10.0.10.0/24"
+avail_zone          = "eu-west-3b"
+env_prefix          = "dev"
+instance_type       = "t2.micro"
+ssh_key             = "/home/andy/.ssh/id_rsa.pub"
+my_ip               = "10.13.193.171/32"
