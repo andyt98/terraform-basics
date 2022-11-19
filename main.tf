@@ -9,6 +9,7 @@ variable "env_prefix" {}
 variable "instance_type" {}
 variable "ssh_key" {}
 variable "my_ip" {}
+variable "private_key_location" {}
 
 data "aws_ami" "amazon-linux-image" {
   most_recent = true
@@ -138,37 +139,50 @@ output "server-ip" {
 resource "aws_instance" "myapp-server" {
   ami                         = data.aws_ami.amazon-linux-image.id
   instance_type               = var.instance_type
-  key_name                    = "myapp-key"
+  key_name                    = aws_key_pair.ssh-key.key_name
   associate_public_ip_address = true
   subnet_id                   = aws_subnet.myapp-subnet-1.id
   vpc_security_group_ids      = [aws_security_group.myapp-sg.id]
   availability_zone           = var.avail_zone
+
+  connection {
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ec2-user"
+    private_key = file(var.private_key_location)
+  }
+
+  # COPY FILE FROM LOCAL MACHINE TO REMOTE MACHINE
+  provisioner "file" {
+    source      = "entry-script.sh"
+    destination = "/home/ec2-user/entry-script.sh"
+  }
+
+  # RUN THE SCRIPT
+  provisioner "remote-exec" {
+    script = file("entry-script.sh")
+  }
+
+  # RUN COMMANDS LOCALLY
+  provisioner "local-exec" {
+    command = "echo ${self.public_ip} > output.txt"
+  }
 
   tags = {
     Name = "${var.env_prefix}-server"
   }
-
-  user_data = <<EOF
-                  #!/bin/bash
-                  sudo yum update -y && sudo yum install -y docker 
-                  sudo systemctl start docker
-                  sudo usermod -aG docker ec2-user
-                  sudo docker run -p 8080:8080 nginx
-              EOF
 }
 
-resource "aws_instance" "myapp-server-two" {
-  ami                         = data.aws_ami.amazon-linux-image.id
-  instance_type               = var.instance_type
-  key_name                    = "myapp-key"
-  associate_public_ip_address = true
-  subnet_id                   = aws_subnet.myapp-subnet-1.id
-  vpc_security_group_ids      = [aws_security_group.myapp-sg.id]
-  availability_zone           = var.avail_zone
-
-  tags = {
-    Name = "${var.env_prefix}-server-two"
+resource "null_resource" "configure_server" {
+  triggers = {
+    trigger = aws_instance.myapp-server.public_ip
   }
 
-  user_data = file("entry-script.sh")
+  provisioner "local-exec" {
+    working_dir = "../ansible"
+    command     = "ansible-playbook --inventory ${aws_instance.myapp-server.public_ip}, --private-key ${var.ssh_key_private} --user ec2-user deploy-docker-new-user.yaml"
+  }
 }
+
+
+
