@@ -1,8 +1,9 @@
-cidr_blocks = [{
-  cidr_block = "10.0.0.0/16"
-  name       = "dev-vpc"
-  },
-  {
-    cidr_block = "10.0.0.0/24"
-    name       = "dev-subnet"
-}]
+vpc_cidr_block       = "10.0.0.0/16"
+subnet_cidr_block    = "10.0.10.0/24"
+avail_zone           = "eu-west-3b"
+env_prefix           = "dev"
+my_ip                = "10.13.193.171/32"
+instance_type        = "t2.micro"
+public_key_location  = "/home/andy/.ssh/id_rsa.pub"
+private_key_location = "/home/andy/.ssh/id_rsa"
+image_name           = "amzn2-ami-hvm-*-x86_64-gp2"

@@ -29,13 +29,3 @@
 ### set avail_zone as custom tf environment variable - before apply
 
     export TF_VAR_avail_zone="eu-west-3a"
-
-### To configure AWS credentials with AWS CLI
-
-    aws configure
-
-### To configure AWS credentials with env variables
-
-    export AWS_SECRET_ACCESS_KEY=...
-    export AWS_ACCESS_KEY_ID=...
-        
