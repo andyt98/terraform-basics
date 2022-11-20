@@ -29,10 +29,3 @@
 ### set avail_zone as custom tf environment variable - before apply
 
     export TF_VAR_avail_zone="eu-west-3a"
-
-### set aws configuration through env variables
-
-    export AWS_ACCESS_KEY_ID="anaccesskey"
-    export AWS_SECRET_ACCESS_KEY="asecretkey"
-    export AWS_DEFAULT_REGION="us-west-2"
-
